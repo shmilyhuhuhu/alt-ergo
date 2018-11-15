@@ -26,9 +26,6 @@
 (*                                                                            *)
 (******************************************************************************)
 
-open Parsed
-open Typed
-
 type env
 (** The type of global environment of the typechecker. *)
 
@@ -54,11 +51,11 @@ val type_file : Parsed.file -> (int Typed.atdecl * env) list * env
 
 (* used by main_gui *)
 val split_goals :
-  (int atdecl * 'a) list ->
-  ((int atdecl * 'a) list * string) list
+  (int Typed.atdecl * 'a) list ->
+  ((int Typed.atdecl * 'a) list * string) list
 
 (* used by main_text *)
 val split_goals_and_cnf :
-  (int atdecl * 'a) list ->
+  (int Typed.atdecl * 'a) list ->
   (Commands.sat_tdecl list * string) list
 
