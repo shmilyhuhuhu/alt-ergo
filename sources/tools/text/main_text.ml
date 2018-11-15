@@ -109,6 +109,7 @@ let () =
       let preludes = Options.preludes () in
       let (module I : Input.S) = Input.find (Options.frontend ()) in
       let pfile = I.parse_file ~filename ~preludes in
+      if parse_only () then exit 0;
       let d, _ = I.type_file pfile in
       let d = Typechecker.split_goals_and_cnf d
           [@ocaml.ppwarning "TODO: implement a more efficient split"]
