@@ -1853,7 +1853,6 @@ let type_file ld =
         (fun acc d -> type_decl keep_triggers acc d)
         ([], env) ld
     in
-    if type_only () then exit 0;
     let l = List.rev_map (fun (d, env) ->
         Triggers.make_decl keep_triggers d, env) ltd in
     l, env

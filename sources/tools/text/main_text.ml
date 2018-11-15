@@ -111,6 +111,7 @@ let () =
       let pfile = I.parse_file ~filename ~preludes in
       if parse_only () then exit 0;
       let d, _ = I.type_file pfile in
+      if type_only () then exit 0;
       let d = Typechecker.split_goals_and_cnf d
           [@ocaml.ppwarning "TODO: implement a more efficient split"]
       in
