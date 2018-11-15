@@ -18,3 +18,25 @@ let () =
   end in
   Input.register "legacy" (module M)
 
+let () =
+  let module M : Input.S = struct
+
+    type expr = unit
+
+    type file = unit
+
+    let parse_expr _ = ()
+
+    let parse_file ~filename ~preludes = ()
+
+    type env = unit
+
+    let new_id () = 0
+
+    let type_expr _ _ _ = assert false
+
+    let type_file _ = [], ()
+
+  end in
+  Input.register "dolmen" (module M)
+

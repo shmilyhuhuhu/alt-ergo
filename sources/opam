@@ -31,6 +31,7 @@ depends: [
   "camlzip"
   "ocplib-simplex" {>= "0.4" }
   "psmt2-frontend" {>= "0.1" }
+  "dolmen"         {=  "dev" }
   "menhir"
   "conf-autoconf" {build}
 ]
