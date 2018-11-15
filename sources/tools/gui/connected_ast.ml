@@ -393,14 +393,14 @@ let rec unquantify_aform (buffer:sbuffer) tyenv vars_entries
               let lexpr = Parsers.parse_expr lb in
               let at, gu =
                 try
-                  let tt = Typechecker.term tyenv uplet lexpr in
+                  let tt = Typechecker.type_expr tyenv uplet lexpr in
                   annot_of_tterm buffer tt, []
                 with Errors.Error _ ->
                   let gv = List.fold_left (fun acc v ->
                       if List.mem v uplet then acc
                       else v::acc) [] goal_vars
                   in
-                  let tt = Typechecker.term tyenv (uplet@gv) lexpr in
+                  let tt = Typechecker.type_expr tyenv (uplet@gv) lexpr in
                   let at = annot_of_tterm buffer tt in
                   at, filter_used_vars_term gv at.c
               in
@@ -722,7 +722,7 @@ and add_trigger ?(register=true) t qid env str offset (sbuf:sbuffer) =
         let lexprs, _ = Parsers.parse_trigger lb in
         let atl = List.fold_right
             (fun lexpr l->
-               let tt = Typechecker.term tyenv
+               let tt = Typechecker.type_expr tyenv
                    (qf.c.aqf_upvars@qf.c.aqf_bvars) lexpr in
                let at = annot_of_tterm sbuf tt in
                at.tag#set_priority (t#priority - 1);

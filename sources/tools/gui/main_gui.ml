@@ -986,7 +986,7 @@ let start_gui all_used_context =
   let filename = get_file () in
   let preludes = Options.preludes () in
   let pfile = Parsers.parse_problem ~filename ~preludes in
-  let typed_ast, _ = Typechecker.file pfile in
+  let typed_ast, _ = Typechecker.type_file pfile in
   let typed_ast = Typechecker.split_goals typed_ast in
 
   let main_vbox = GPack.vbox
@@ -1434,7 +1434,7 @@ let start_replay session_cin all_used_context =
   let filename = get_file () in
   let preludes = Options.preludes () in
   let pfile = Parsers.parse_problem ~filename ~preludes in
-  let typed_ast, _ = Typechecker.file pfile in
+  let typed_ast, _ = Typechecker.type_file pfile in
   let typed_ast = Typechecker.split_goals typed_ast in
   List.iter
     (fun (l, goal_name) ->

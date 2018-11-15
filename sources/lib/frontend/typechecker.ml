@@ -38,6 +38,8 @@ module Sy = Symbols.Set
 module MString =
   Map.Make(struct type t = string let compare = Pervasives.compare end)
 
+
+
 module Types = struct
 
   (* environment for user-defined types *)
@@ -1842,7 +1844,7 @@ let type_decl keep_triggers (acc, env) d =
     Loc.report std_formatter loc;
     acc, env
 
-let file ld =
+let type_file ld =
   let env = Env.empty in
   let keep_triggers = false (* ??? *) in
   try
@@ -1902,7 +1904,7 @@ let split_goals l =
 let split_goals_and_cnf l =
   split_goals_aux (fun td env acc -> Cnf.make acc td) l
 
-let term env vars t =
+let type_expr env vars t =
   let vmap =
     List.fold_left
       (fun m (s,ty)->
@@ -1913,3 +1915,4 @@ let term env vars t =
   type_term env t
 
 type env = Env.t
+

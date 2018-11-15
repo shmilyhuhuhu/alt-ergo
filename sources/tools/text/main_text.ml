@@ -107,13 +107,17 @@ let () =
       (*Options.parse_args ();*)
       let filename = get_file () in
       let preludes = Options.preludes () in
-      let pfile = Parsers.parse_problem ~filename ~preludes in
-      let d, _ = Typechecker.file pfile in
+      let (module I : Input.S) = Input.find (Options.frontend ()) in
+      let pfile = I.parse_file ~filename ~preludes in
+      let d, _ = I.type_file pfile in
       let d = Typechecker.split_goals_and_cnf d
           [@ocaml.ppwarning "TODO: implement a more efficient split"]
       in
       d
-    with Util.Timeout ->
+    with
+    | Not_found ->
+      exit 2
+    | Util.Timeout ->
       FE.print_status (FE.Timeout None) 0L;
       exit 142
   in
