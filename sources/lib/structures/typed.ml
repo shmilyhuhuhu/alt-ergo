@@ -307,3 +307,49 @@ let string_of_th_ext ext =
   | NRA -> "NRA"
   | NIA -> "NIA"
   | FPA -> "FPA"
+
+
+module Term = struct
+
+  type t = int atterm
+
+  (* TODO: implement hash, compare and equal on typed terms *)
+
+  let ty { tt_ty ; _ } = tt_ty
+
+  module Var = struct
+
+    type t = {
+      var : Symbols.t;
+      ty  : Ty.t;
+    }
+
+    let hash { var; _ } = Symbols.hash var
+
+    let compare v v' =
+      Symbols.compare v.var v'.var
+
+    let equal v v' = compare v v' = 0
+
+    let ty { ty; _ } = ty
+
+    let mk name ty =
+      { var = Symbols.var name; ty; }
+
+  end
+
+  module Const = struct
+
+    type t = {
+      symbol : Symbols.t;
+      vars : Ty.Safe.Var.t list;
+      args : Ty.t list;
+      ret  : Ty.t;
+    }
+
+
+
+  end
+
+end
+

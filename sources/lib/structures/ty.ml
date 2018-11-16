@@ -473,7 +473,7 @@ module Safe = struct
 
     let symbol { symbol; _ } = symbol
 
-    let tag _ () _ = () (* Used for dolmen compatibility *)
+    let tag _ _ _ = () (* Used for dolmen compatibility *)
 
   end
 
@@ -491,6 +491,6 @@ module Safe = struct
     else
       raise (Wrong_arity (c, m))
 
-  let tag _ () _ = () (* dolmen compatibility *)
+  let tag _ _ _ = () (* dolmen compatibility *)
 
 end
