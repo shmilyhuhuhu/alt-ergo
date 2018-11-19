@@ -24,8 +24,6 @@ module type S = sig
 
   type env
 
-  val new_id : unit -> int
-
   val type_expr :
     env -> (Symbols.t * Ty.t) list -> expr -> int Typed.atterm
 

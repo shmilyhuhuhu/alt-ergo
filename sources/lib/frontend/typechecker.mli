@@ -29,10 +29,6 @@
 type env
 (** The type of global environment of the typechecker. *)
 
-val new_id : unit -> int
-(** Generate a new and fresh id. *)
-(* TODO: why is this function in Typechecker and not Term ? *)
-
 val type_expr :
   env -> (Symbols.t * Ty.t) list -> Parsed.lexpr -> int Typed.atterm
 (** Typecheck an input expression (i.e. term (or formula ?)), given

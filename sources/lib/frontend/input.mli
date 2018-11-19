@@ -42,9 +42,6 @@ module type S = sig
   type env
   (** The type of local environments used for typechecking. *)
 
-  val new_id : unit -> int
-  (** Generate a new, fresh identifier *)
-
   val type_expr :
     env -> (Symbols.t * Ty.t) list -> expr -> int Typed.atterm
   (** Parse and typecheck a term. *)

@@ -282,8 +282,6 @@ module Env = struct
 
 end
 
-let new_id = let r = ref 0 in fun () -> r := !r+1; !r
-
 let rec freevars_term acc t = match t.c.tt_desc with
   | TTvar x -> Sy.add x acc
   | TTapp (_,lt) -> List.fold_left freevars_term acc lt

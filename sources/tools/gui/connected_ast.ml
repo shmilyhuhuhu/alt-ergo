@@ -346,7 +346,7 @@ let is_quantified_term vars at =
   | _ -> true
 
 let unquantify_aaterm (buffer:sbuffer) at =
-  new_annot buffer at.c (Typechecker.new_id ()) (tag buffer)
+  new_annot buffer at.c (Typed.new_id ()) (tag buffer)
 
 let unquantify_aatom (buffer:sbuffer) = function
   | AAtrue -> AAtrue
@@ -415,7 +415,7 @@ let rec unquantify_aform (buffer:sbuffer) tyenv vars_entries
         List.fold_left
           (fun af (u, s, at) ->
              new_annot buffer (AFlet (u, [s, ATletTerm at], af))
-               (Typechecker.new_id ()) (tag buffer))
+               (Typed.new_id ()) (tag buffer))
           afc lets in
       if nbv == [] then (add_lets aform lets).c, ve, goal_used
       else
@@ -439,10 +439,10 @@ let rec unquantify_aform (buffer:sbuffer) tyenv vars_entries
             } in
           (match f with
            | AFforall _ ->
-             AFforall (new_annot buffer c (Typechecker.new_id ()) (tag buffer)),
+             AFforall (new_annot buffer c (Typed.new_id ()) (tag buffer)),
              ve, goal_used
            | AFexists _ ->
-             AFexists (new_annot buffer c (Typechecker.new_id ()) (tag buffer)),
+             AFexists (new_annot buffer c (Typed.new_id ()) (tag buffer)),
              ve, goal_used
            | _ -> assert false)
 
@@ -453,10 +453,10 @@ let rec unquantify_aform (buffer:sbuffer) tyenv vars_entries
       let c = { aaqf.c with aqf_form = naqf_form } in
       (match f with
        | AFforall _ ->
-         AFforall (new_annot buffer c (Typechecker.new_id ()) (tag buffer)),
+         AFforall (new_annot buffer c (Typed.new_id ()) (tag buffer)),
          ve, goal_used
        | AFexists _ ->
-         AFexists (new_annot buffer c (Typechecker.new_id ()) (tag buffer)),
+         AFexists (new_annot buffer c (Typed.new_id ()) (tag buffer)),
          ve, goal_used
        | _ -> assert false)
 
@@ -475,7 +475,7 @@ let rec unquantify_aform (buffer:sbuffer) tyenv vars_entries
       in
       AFnamed (n, naaf), ve, goal_used
   in
-  new_annot buffer c (Typechecker.new_id ()) ptag, ve, goal_used
+  new_annot buffer c (Typed.new_id ()) ptag, ve, goal_used
 
 
 let make_instance (buffer:sbuffer) vars entries afc goal_form tyenv =
