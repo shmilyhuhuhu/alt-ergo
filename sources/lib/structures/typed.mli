@@ -117,8 +117,7 @@ and 'a tt_desc =
   | TTrecord of (Hstring.t * 'a atterm) list
   (** Record creation. *)
   | TTlet of (Symbols.t * 'a atterm) list * 'a atterm
-  (** Let-bindings. Accept a list of mutually recursive le-bindings. *)
-  (* TODO: check that mutually recursive let-bindings are allowed ? *)
+  (** Let-bindings. Accept a list of sequential let-bindings. *)
   | TTnamed of Hstring.t * 'a atterm
   (** Attach a label to a term. *)
   | TTite of 'a atform * 'a atterm * 'a atterm
@@ -184,8 +183,10 @@ and 'a tform =
   | TFlet of (Symbols.t * Ty.t) list *
              (Symbols.t * 'a tlet_kind) list *
              'a atform
-  (** Let binding.
-      TODO: what is in the first list ? *)
+  (** Let binding. [TFlet (fv, bv, body)] represents the binding
+      of the variables in [bv] (to the corresponding term or formula),
+      in the formula [body]. The list [fv] contains the list of free term
+      variables (together with their type) that occurs in the formula. *)
   | TFnamed of Hstring.t * 'a atform
   (** Attach a name to a formula. *)
 (** Typed formulas. *)
@@ -296,3 +297,23 @@ val string_of_th_ext : theories_extensions -> string
 val th_ext_of_string : string -> Loc.t -> theories_extensions
 (** Parses a string into the typed representation of theories. *)
 
+
+(** {2 Expressions} *)
+
+module Expr : sig
+
+  type t =
+    | Term of int atterm  (** Terms *)
+    | Atom of int atatom  (** Atoms *)
+    | Form of int atform * Ty.tvar list
+    (** Formulas additionally carry their set of explicitly quantified
+        type variables, in order to disallow deep type quantification. *)
+  (** An expression is either a term, an atom, or a formula. *)
+
+  val ty : t -> Ty.t
+
+  module Var : sig
+
+  end
+
+end
