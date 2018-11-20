@@ -311,9 +311,189 @@ module Expr : sig
   (** An expression is either a term, an atom, or a formula. *)
 
   val ty : t -> Ty.t
+  (** Return the type of the given expression. *)
 
   module Var : sig
 
+    type t
+    (** Typed variables *)
+
+    val hash : t -> int
+    (** hash function *)
+
+    val equal : t -> t -> bool
+    (** equality funciton *)
+
+    val compare : t -> t -> int
+    (** comparison function *)
+
+    val mk : string -> Ty.t -> t
+    (** Create a typed variable from a name and type. *)
+
+    val make : Symbols.t -> Ty.t -> t
+    (** Create a typed variable from a symbol and type. *)
+
+    val ty : t -> Ty.t
+    (** Return the type of a typed variable. *)
+
   end
+
+  module Const : sig
+
+    type t
+    (** Typed function symbols (aka constants) *)
+
+    val hash : t -> int
+    (** hash function *)
+
+    val equal : t -> t -> bool
+    (** equality funciton *)
+
+    val compare : t -> t -> int
+    (** comparison function *)
+
+    val arity : t -> int * int
+    (** Return the expected number of arguments of the constants.
+        The pair contains first the number of expected type
+        arguments (for polymorphic functions), and then the number
+        of reguler (or term) arguments. *)
+
+    val mk : Symbols.t -> Ty.tvar list -> Ty.t list -> Ty.t -> t
+    (** Create a typed funciton symbol. Takes as arguments the
+        symbol of the function, the type variables that occur in its
+        type, the list of argument's expected types, and the function
+        return type. *)
+
+  end
+
+  (** {5 Typing exceptions} *)
+
+  exception Term_expected
+  (** Raised by function that expect an expression to be
+      a term, but the expression was an atom or formula. *)
+
+  exception Formula_expected
+  (** Raised by function that expect an expression to be
+      a formula, but the expression was a term. *)
+
+  exception Formula_in_term_let
+  (** Current typed term structure restricts let-bindings in terms
+      to only bind variables to terms and not formulas. *)
+
+  exception Deep_type_quantification
+  (** Alt-ergo restricts type variables to be quantified at the
+      top of formulas. This exception is raised when trying to
+      build a formula that contain a formula with explicitly
+      quantified type variables. *)
+
+  exception Wrong_type of t * Ty.t
+  (** [Wrong_type (t, ety)] is raised by function that checks
+      and compute the type of expressions, when an expression
+      was expected to have type [ety], but doe snot have that
+      type (as returned by the {! ty} function). *)
+
+  exception Wrong_arity of Const.t * int * int
+  (** [Wrong_arity (c, n, m)] is raised when a constant [c]
+      is applied to [n] number of type arguments and [m] term
+      arguments, but these number do not match the arity of [c],
+      as defined by {! Const.arity}. *)
+
+  (** {3 Expression building} *)
+
+  val apply : Const.t -> Ty.t list -> t list -> t
+  (** Apply the given typed funciton symbol to the list of
+      types and terms given. Automatically checks that the arguments
+      have the correct type, and computes the type of the resulting
+      expression.
+      @raise Wrong_arity
+      @raise Wrong_type
+      @raise Term_expected
+  *)
+
+  val _true : t
+  (** The [true] expression *)
+
+  val _false : t
+  (** The [false] expression *)
+
+  val eq : t -> t -> t
+  (** Create an equality between two expressions.
+      @raise Wrong_type
+      @raise Term_expected
+  *)
+
+  val distinct : t list -> t
+  (** Create a distinct expression.
+      @raise Wrong_type
+      @raise Term_expected
+  *)
+
+  val neg : t -> t
+  (** Propositional negation
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val imply : t -> t -> t
+  (** Propositional implication
+      @raise Formula_expted
+      @raise Deep_type_quantification
+  *)
+
+  val equiv : t -> t -> t
+  (** Propositional equivalence
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val xor : t -> t -> t
+  (** Propositional exclusive disjunction
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val _and : t list -> t
+  (** Propositional conjunction
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val _or : t list -> t
+  (** Propositional disjunction
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val fv : t -> Ty.tvar list * Var.t list
+  (** Return the list of free variables that occur in a given term *)
+
+  val all :
+    (Ty.tvar list * Var.t list) ->
+    (Ty.tvar list * Var.t list) ->
+    t -> t
+  (** Universal quantification. Accepts as first pair the lists
+      of free variables that occur in the resulting formula, then
+      the lists of variables quantified in the formula, and then the body
+      of the quantified formula.
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val ex :
+    (Ty.tvar list * Var.t list) ->
+    (Ty.tvar list * Var.t list) ->
+    t -> t
+  (** Existencial quantification. Accepts as first pair the lists
+      of free variables that occur in the resulting formula, then
+      the lists of variables quantified in the formula, and then the body
+      of the quantified formula.
+      @raise Formula_expected
+      @raise Deep_type_quantification
+  *)
+
+  val letin : (Var.t * t) list -> t -> t
+  (** Let-binding.
+      @raise Deep_type_quantification
+  *)
 
 end

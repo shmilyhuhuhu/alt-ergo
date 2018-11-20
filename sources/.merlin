@@ -17,3 +17,5 @@ PKG zarith
 PKG camlzip
 PKG ocplib-simplex
 PKG psmt2-frontend
+PKG dolmen
+PKG dolmen_typecheck

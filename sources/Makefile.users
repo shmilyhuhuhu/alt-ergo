@@ -14,7 +14,7 @@ LOCAL_INC = -I lib/util -I lib/structures -I lib/reasoners \
     -I plugins/fm-simplex \
     -I plugins/AB-Why3
 
-INCLUDES = $(NUMLIB) $(ZARITHLIB) $(LABLGTK2LIB)  $(CAMLZIPLIB) $(OCPLIBSIMPLEXLIB) $(PSMT2FELIB) $(DOLMENLIB) $(LOCAL_INC)
+INCLUDES = $(NUMLIB) $(ZARITHLIB) $(LABLGTK2LIB)  $(CAMLZIPLIB) $(OCPLIBSIMPLEXLIB) $(PSMT2FELIB) $(DOLMENLIB) $(DOLMENTYPELIB) $(LOCAL_INC)
 #for coverage # -I /usr/local/lib/ocaml/3.12.1/bisect -pp "camlp4o str.cma /usr/local/lib/ocaml/3.12.1/bisect/bisect_pp.cmo"
 
 # TODO : enable these warnings one by one and fix the code
@@ -154,13 +154,12 @@ CMO-PARSERS = \
       parsers/why/why_parser.cmo \
       parsers/why/why_lexer.cmo \
       parsers/smt2/psmt2_to_alt_ergo.cmo \
-      parsers/common/parsers_loader.cmo \
-      tools/text/main_input.cmo
+      parsers/common/parsers_loader.cmo
 
 
 # parsers/why/why_parser.cmo parsers/why/why_lexer.cmo
 
-MAINCMO = $(CMO-LIB) $(CMO-PARSERS) tools/text/main_text.cmo
+MAINCMO = $(CMO-LIB) $(CMO-PARSERS) tools/text/main_input.cmo tools/text/main_text.cmo
 
 ifeq ($(ENABLEGUI),yes)
 	GUICMO = $(CMO-LIB) $(CMO-PARSERS) \

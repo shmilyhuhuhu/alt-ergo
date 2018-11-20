@@ -603,15 +603,15 @@ module Expr = struct
     | Term t ->
       let l' = List.map (fun (v, e') ->
           match e' with
-          | Term t' -> v, t'
+          | Term t' -> v.Var.var, t'
           | _ -> raise Formula_in_term_let
         ) l in
       Term (mk @@ { tt_desc = TTlet (l', t); tt_ty = t.c.tt_ty})
     | Form (f, []) ->
       let l' = List.map (fun (v, e') ->
           match promote_atom e' with
-          | Term t' -> v, TletTerm t'
-          | Form (f', []) -> v, TletForm f'
+          | Term t' -> v.Var.var, TletTerm t'
+          | Form (f', []) -> v.Var.var, TletForm f'
           | Form (_, _) -> raise Deep_type_quantification
           | Atom _ -> assert false
         ) l in
