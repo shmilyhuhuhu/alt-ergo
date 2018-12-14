@@ -450,7 +450,18 @@ let rec print_silent fmt t =
       | Sy.L_neg_pred, [a] ->
         fprintf fmt "(not %a)" print a
 
-      | _ -> assert false
+      | Sy.L_built (Sy.IsConstr hs), [e] ->
+        fprintf fmt "(%a ? %a)" print e Hstring.print hs
+
+      | Sy.L_neg_built (Sy.IsConstr hs), [e] ->
+        fprintf fmt "not (%a ? %a)" print e Hstring.print hs
+
+      | (Sy.L_built (Sy.LT | Sy.LE) | Sy.L_neg_built (Sy.LT | Sy.LE)
+        | Sy.L_neg_pred | Sy.L_eq | Sy.L_neg_eq
+        | Sy.L_built (Sy.IsConstr _)
+        | Sy.L_neg_built (Sy.IsConstr _)) , _ ->
+        assert false
+
     end
 
   | Sy.Op Sy.Get, [e1; e2] ->
@@ -490,8 +501,17 @@ let rec print_silent fmt t =
                             op == Sy.Integer_round ->
     fprintf fmt "%a(%a,%a)" Sy.print f print e1 print e2
 
+  (* TODO: introduce PrefixOp in the future to simplify this ? *)
+  | Sy.Op (Sy.Constr hs), ((_::_) as l) ->
+    fprintf fmt "%a(%a)" Hstring.print hs print_list l
+
   | Sy.Op op, [e1; e2] ->
     fprintf fmt "(%a %a %a)" print e1 Sy.print f print e2
+
+  | Sy.Op Sy.Destruct (hs, grded), [e] ->
+    fprintf fmt "%a#%s%a"
+      print e (if grded then "" else "!") Hstring.print hs
+
 
   | Sy.In(lb, rb), [t] ->
     fprintf fmt "(%a in %a, %a)" print t Sy.print_bound lb Sy.print_bound rb

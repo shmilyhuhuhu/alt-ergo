@@ -250,7 +250,7 @@ module Main : S = struct
   let congruents env facts t1 s =
     match E.term_view t1 with
     | E.Term {E.xs=[]} -> ()
-    | E.Term {E.f} when X.fully_interpreted f -> ()
+    | E.Term {E.f; ty} when X.fully_interpreted f ty -> ()
     | E.Term _ -> SE.iter (equal_only_by_congruence env facts t1) s
     | E.Not_a_term _ -> assert false
 
@@ -615,7 +615,8 @@ module Main : S = struct
       Util.MI.fold
         (fun _ x acc ->
            let y, ex = Uf.find_r uf x in (*use terms ? *)
-           (LR.mkv_eq x y, None, ex, Th_util.Subst) :: acc)
+           (* PB Here: LR.mkv_eq may swap x and y *)
+           ((*LR.mkv_eq x y*) A.Eq(x, y), None, ex, Th_util.Subst) :: acc)
         facts.touched acc
     in
     facts.touched <- Util.MI.empty;

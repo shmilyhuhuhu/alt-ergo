@@ -115,9 +115,13 @@ and 'a tt_desc =
   | TTite of 'a atform * 'a atterm * 'a atterm
   (** Conditional branching, of the form
       [TTite (condition, then_branch, else_branch)]. *)
+
+  | TTsharp of bool * ('a tterm, 'a) annoted  * Hstring.t
+
 (** Typed terms descriptors. *)
 (* TODO: replace tuples by records (possible inline recors to
          avoid polluting the namespace ?) with explicit field names. *)
+
 
 and 'a atatom = ('a tatom, 'a) annoted
 (** Type alias for annoted typed atoms. *)
@@ -141,6 +145,9 @@ and 'a tatom =
   | TApred of 'a atterm * bool
   (** Term predicate, negated if the boolean is true.
       [TApred (t, negated)] is satisfied iff [t <=> not negated] *)
+
+  | TTisConstr of ('a tterm, 'a) annoted  * Hstring.t
+
 (** Typed atoms. *)
 
 and 'a quant_form = {

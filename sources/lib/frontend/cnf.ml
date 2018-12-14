@@ -247,6 +247,9 @@ let rec make_term up_qv t =
       let t1 = mk_term t1 in
       let t2 = mk_term t2 in
       E.mk_term (Sy.name "ite") [cond; t1; t2] ty
+
+    | TTsharp (b, t, s) ->
+      E.mk_term (Sy.destruct ~guarded:b (Hstring.view s)) [mk_term t] ty
   in
   mk_term t
 
@@ -352,6 +355,9 @@ and make_form up_qv name_base f loc ~decl_kind : E.t =
                 [make_term up_qv t1;
                  make_term up_qv t2]
           end
+        | TTisConstr (t, lbl) ->
+          E.mk_builtin true (Sy.IsConstr lbl)
+            [make_term up_qv t]
 
         | _ -> assert false
       end

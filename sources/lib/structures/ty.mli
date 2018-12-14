@@ -54,6 +54,7 @@ type t =
       to values of type [dst]. *)
   | Tsum of Hstring.t * Hstring.t list
   (** Enumeration, with its name, and the list of its constructors. *)
+  | Tadt of Hstring.t * t list  * (Hstring.t * (Hstring.t * t) list) list
   | Trecord of trecord
   (** Record type. *)
 
@@ -134,6 +135,8 @@ val text : t list -> string -> t
 val tsum : string -> string list -> t
 (** Create an enumeration type. [tsum name enums] creates an enumeration
     named [name], with constructors [enums]. *)
+
+val tadt : t list -> string -> (string * (string * t) list) list -> t
 
 val trecord : t list -> string -> (string * t) list -> t
 (** Create a record type. [trecord args name lbs] creates a record

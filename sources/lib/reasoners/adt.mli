@@ -9,7 +9,12 @@
 (*                                                                            *)
 (******************************************************************************)
 
-type 'a abstract = unit
+type 'a abstract =
+  | Constr of
+      { c_name : Hstring.t ; c_ty : Ty.t ; c_args : (Hstring.t * 'a) list }
+  | Select of { d_name : Hstring.t ; d_ty : Ty.t ; d_arg : 'a }
+  | Tester of { t_name : Hstring.t ; t_arg : 'a }
+  | Alien of 'a
 
 module type ALIEN = sig
   include Sig.X
@@ -17,29 +22,5 @@ module type ALIEN = sig
   val extract : r -> (r abstract) option
 end
 
-module Shostak (X : ALIEN) = struct
-
-  type t = X.r abstract
-  type r = X.r
-
-  let name           = "Ite"
-  let is_mine_symb _ _ = false
-  let fully_interpreted sb = assert false
-  let type_info _    = assert false
-  let color _        = assert false
-  let print _ _      = assert false
-  let embed _        = assert false
-  let is_mine _      = assert false
-  let compare _ _    = assert false
-  let equal _ _      = assert false
-  let hash _         = assert false
-  let leaves _       = assert false
-  let subst _ _ _    = assert false
-  let make _         = assert false
-  let term_extract _ = None, false
-  let abstract_selectors p acc = assert false
-  let solve r1 r2 = assert false
-  let assign_value r _ eq = assert false
-  let choose_adequate_model t _ l = assert false
-end
-
+module Shostak
+    (X : ALIEN) : Sig.SHOSTAK with type r = X.r and type t = X.r abstract
